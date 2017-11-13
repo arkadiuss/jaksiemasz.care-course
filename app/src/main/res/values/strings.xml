@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">testapp</string>
+    <string name="open_button">Let\'s go into magic world!</string>
+    <string name="close_button">Leave magic world :(</string>
+    <string name="close_toast">You don\'t know what you lost</string>
+    <string name="title_activity_test">TestActivity</string>
+</resources>
