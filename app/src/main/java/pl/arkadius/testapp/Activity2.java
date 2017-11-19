@@ -5,6 +5,8 @@ import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,11 +14,10 @@ import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.squareup.picasso.Picasso;
 
-public class Activity2 extends Activity {
+public class Activity2 extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,19 +27,14 @@ public class Activity2 extends Activity {
         Contact contact = new Contact("Apple","Corporation","kiepskafirma.com","kiepska@firma.com","123456789","http://cdn.androidbeat.com/wp-content/uploads/2014/09/Android_eating_Apple_evil.jpg");
         //ActionBar
         Toolbar t = (Toolbar) findViewById(R.id.toolbar);
-        setActionBar(t);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        setSupportActionBar(t);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         CollapsingToolbarLayout ctl = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        AppBarLayout abl = (AppBarLayout) findViewById(R.id.app_bar);
         ctl.setTitleEnabled(true);
-        ctl.setTitle("anything");
-        ctl.setCollapsedTitleTextAppearance(R.style.TextAppearance_App_Title_Collapsed);
-        ctl.setExpandedTitleTextAppearance(R.style.TextAppearance_App_Title_Expanded);
-
+        ctl.setTitle(contact.getName()+" "+contact.getSurname());
         //Setting view
         TextView tvName = (TextView) findViewById(R.id.tv_name);
-        tvName.setText(contact.getName()+contact.getSurname());
+        tvName.setText(contact.getName()+" "+contact.getSurname());
         TextView tvEmail = (TextView) findViewById(R.id.tv_email);
         tvEmail.setText(contact.getEmail());
         TextView tvPhone = (TextView) findViewById(R.id.tv_phoneno);
