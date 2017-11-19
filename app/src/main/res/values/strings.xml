@@ -4,4 +4,8 @@
     <string name="close_button">Leave magic world :(</string>
     <string name="close_toast">You don\'t know what you lost</string>
     <string name="title_activity_test">TestActivity</string>
+    <string name="name">Imię i nazwisko</string>
+    <string name="website">Strona internetowa</string>
+    <string name="phoneno">Numer telefonu</string>
+    <string name="email">Email</string>
 </resources>
