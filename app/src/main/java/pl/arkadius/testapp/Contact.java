@@ -33,6 +33,10 @@ public class Contact {
         this.surname = surname;
     }
 
+    public String getFullName(){
+        return getName()+" "+getSurname();
+    }
+
     public String getPhoneNo() {
         return phoneNo;
     }

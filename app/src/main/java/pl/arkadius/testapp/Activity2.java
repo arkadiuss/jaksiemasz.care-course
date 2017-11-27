@@ -31,7 +31,7 @@ public class Activity2 extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         CollapsingToolbarLayout ctl = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         ctl.setTitleEnabled(true);
-        ctl.setTitle(contact.getName()+" "+contact.getSurname());
+        ctl.setTitle(contact.getFullName());
         //Setting view
         TextView tvName = (TextView) findViewById(R.id.tv_name);
         tvName.setText(contact.getName()+" "+contact.getSurname());
