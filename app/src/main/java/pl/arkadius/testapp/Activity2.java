@@ -23,8 +23,8 @@ public class Activity2 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_2);
-        //Creating contact
-        Contact contact = new Contact("Apple","Corporation","kiepskafirma.com","kiepska@firma.com","123456789","http://cdn.androidbeat.com/wp-content/uploads/2014/09/Android_eating_Apple_evil.jpg");
+        //Getting contact
+        Contact contact = getIntent().getParcelableExtra(MainActivity.EXTRA_CONTACT);
         //ActionBar
         Toolbar t = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(t);
@@ -34,7 +34,7 @@ public class Activity2 extends AppCompatActivity {
         ctl.setTitle(contact.getFullName());
         //Setting view
         TextView tvName = (TextView) findViewById(R.id.tv_name);
-        tvName.setText(contact.getName()+" "+contact.getSurname());
+        tvName.setText(contact.getFullName());
         TextView tvEmail = (TextView) findViewById(R.id.tv_email);
         tvEmail.setText(contact.getEmail());
         TextView tvPhone = (TextView) findViewById(R.id.tv_phoneno);
@@ -43,10 +43,6 @@ public class Activity2 extends AppCompatActivity {
         tvWebsite.setText(contact.getWebsite());
         ImageView ivPhoto = (ImageView) findViewById(R.id.photo);
         Picasso.with(this).load(contact.getPicURL()).into(ivPhoto);
-    }
-
-    public void closeButton(View v){
-        finish();
     }
 
     @Override
@@ -61,8 +57,8 @@ public class Activity2 extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    protected void onDestroy() {
+        super.onDestroy();
         Toast.makeText(this,R.string.close_toast,Toast.LENGTH_SHORT).show();
     }
 }
