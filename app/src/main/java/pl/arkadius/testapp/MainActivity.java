@@ -9,42 +9,59 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements ContactsAdapter.Listener{
+public class MainActivity extends AppCompatActivity implements MainContract.MainView,ContactsAdapter.Listener{
     private RecyclerView rv;
-    private ArrayList<Contact> cons= new ArrayList<Contact>();
     private ContactsAdapter adCon;
+    private MainContract.MainPresenter presenter;
 
     public static final String EXTRA_CONTACT="contact";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //Creating list
-        cons.add(new Contact("Google","Corporation","www.google.com","spoko@firma.com","123456789","https://www.google.pl/doodle4google/images/splashes/featured.png"));
-        cons.add(new Contact("Apple","Corporation","www.kiepskafirma.com","kiepska@firma.com","123456789","http://cdn.androidbeat.com/wp-content/uploads/2014/09/Android_eating_Apple_evil.jpg"));
-        cons.add(new Contact("Microsoft","Corporation","www.ujdziewtlumie.com","niebieski@ekran.com","123456789","http://gfx.antyradio.pl/var/antyradio/storage/images/technologia/komputery/niebieski-ekran-smierci-bardziej-przyjazny-uzytkownikom-i-hakerom-7869/627011-1-pol-PL/Niebieski-Ekran-Smierci-bardziej-przyjazny-uzytkownikom-i-hakerom_article.png"));
-        cons.add(new Contact("Linux","Foundation","www.jedynyslusznysystem.com","spoko@firma.com","123456789","https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/10/1444835774tux.jpg"));
         //Creating recycler view
         rv=(RecyclerView) findViewById(R.id.recycler_cons);
-        adCon = new ContactsAdapter(cons,this);
-        adCon.setListener(this);
-        rv.setAdapter(adCon);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
-
+        //Connecting with presenter
+        presenter = new MainPresenterImpl(RepositoryImpl.getInstance());
+        presenter.attach(this);
+        presenter.loadContacts();
     }
 
     @Override
     public void onItemClick(int position) {
-        Intent toSec = new Intent(this,Activity2.class);
-        toSec.putExtra(EXTRA_CONTACT,cons.get(position));
-        startActivity(toSec);
+        presenter.onContactClicked(position);
     }
 
     @Override
     public void onLongItemClick(int position) {
-        cons.remove(position);
+        presenter.onLongContactClicked(position);
+    }
+
+    @Override
+    public void openContactDetails(Contact contact) {
+        Intent toSec = new Intent(this,ContactDetailsActivity.class);
+        toSec.putExtra(EXTRA_CONTACT,contact);
+        startActivity(toSec);
+    }
+
+    @Override
+    public void deleteContact() {
         adCon.notifyDataSetChanged();
         Toast.makeText(this, R.string.notify_deleted,Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showContacts(ArrayList<Contact> contacts) {
+        adCon = new ContactsAdapter(contacts,this);
+        adCon.setListener(this);
+        rv.setAdapter(adCon);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.detach();
     }
 }
