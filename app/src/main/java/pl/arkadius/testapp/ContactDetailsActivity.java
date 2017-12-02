@@ -13,9 +13,15 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class ContactDetailsActivity extends AppCompatActivity implements ContactDetailsContract.ContactDetailsView {
-    private TextView tvName,tvEmail,tvWebsite,tvPhone;
-    private ImageView ivPhoto;
+    @BindView(R.id.tv_name) TextView tvName;
+    @BindView(R.id.tv_email) TextView tvEmail;
+    @BindView(R.id.tv_website) TextView tvWebsite;
+    @BindView(R.id.tv_phoneno) TextView tvPhone;
+    @BindView(R.id.photo) ImageView ivPhoto;
     private ContactDetailsContract.ContactDetailsPresenter presenter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +42,7 @@ public class ContactDetailsActivity extends AppCompatActivity implements Contact
         ctl.setTitleEnabled(true);
         ctl.setTitle(contact.getFullName());
         //Setting view
-        tvName = (TextView) findViewById(R.id.tv_name);
-        tvEmail = (TextView) findViewById(R.id.tv_email);
-        tvPhone = (TextView) findViewById(R.id.tv_phoneno);
-        tvWebsite = (TextView) findViewById(R.id.tv_website);
-        ivPhoto = (ImageView) findViewById(R.id.photo);
+        ButterKnife.bind(this);
         presenter.setContact();
     }
 

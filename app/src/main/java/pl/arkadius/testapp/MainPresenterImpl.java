@@ -36,7 +36,9 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
 
     @Override
     public void loadContacts() {
-        view.showProgressBar();
+        if (view != null) {
+            view.showProgressBar();
+        }
 
         Call<ArrayList<Contact>> call = apiClient.getContacts();
         call.enqueue(new Callback<ArrayList<Contact>>() {
@@ -58,18 +60,24 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
 
     @Override
     public void onContactClicked(int position) {
-        view.openContactDetails(contacts.get(position));
+        if (view != null) {
+            view.openContactDetails(contacts.get(position));
+        }
     }
 
     @Override
     public void onLongContactClicked(int position) {
         contacts.remove(position);
-        view.deleteContact();
+        if (view != null) {
+            view.deleteContact();
+        }
     }
 
     @Override
     public void onReconnectButtonClick() {
         loadContacts();
-        view.hideFailView();
+        if (view != null) {
+            view.hideFailView();
+        }
     }
 }

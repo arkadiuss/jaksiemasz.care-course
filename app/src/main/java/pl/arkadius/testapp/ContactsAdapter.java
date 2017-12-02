@@ -41,7 +41,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
         this.listener=l;
     }
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private CardView cv;
+        CardView cv;
         public ViewHolder(CardView itemView) {
             super(itemView);
             cv=itemView;

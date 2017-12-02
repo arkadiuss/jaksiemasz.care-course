@@ -13,33 +13,28 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class MainActivity extends AppCompatActivity implements MainContract.MainView,ContactsAdapter.Listener{
-    private RecyclerView rv;
+    @BindView(R.id.recycler_cons)  RecyclerView rv;
     private ContactsAdapter adCon;
     private MainContract.MainPresenter presenter;
-    private ProgressBar progressBar;
-    private TextView failText;
-    private Button reconnectButton;
+    @BindView(R.id.progress_bar)  ProgressBar progressBar;
+    @BindView(R.id.fail_text) TextView failText;
+    @BindView(R.id.reconnect_button) Button reconnectButton;
 
     public static final String EXTRA_CONTACT="contact";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         //Creating recycler view
-        rv=(RecyclerView) findViewById(R.id.recycler_cons);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
         //Creeating view
-        progressBar=(ProgressBar) findViewById(R.id.progress_bar);
-        failText=(TextView) findViewById(R.id.fail_text);
-        reconnectButton=(Button) findViewById(R.id.reconnect_button);
-        reconnectButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.onReconnectButtonClick();
-            }
-        });
         hideFailView();
         //Connecting with presenter
         presenter = new MainPresenterImpl(RepositoryImpl.getInstance());
@@ -55,6 +50,11 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
     @Override
     public void onLongItemClick(int position) {
         presenter.onLongContactClicked(position);
+    }
+
+    @OnClick(R.id.reconnect_button)
+    public void reconnect(){
+        presenter.onReconnectButtonClick();
     }
 
     @Override
