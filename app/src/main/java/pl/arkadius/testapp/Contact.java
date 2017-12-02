@@ -3,13 +3,35 @@ package pl.arkadius.testapp;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by arkadius on 18.11.17.
  */
 
 public class Contact implements Parcelable {
-    private String name,surname;
-    private String website, email, picURL,phoneNo;
+    @SerializedName("id")
+    @Expose
+    private String id;
+    @SerializedName("firstName")
+    @Expose
+    private String name;
+    @SerializedName("lastName")
+    @Expose
+    private String surname;
+    @SerializedName("website")
+    @Expose
+    private String website;
+    @SerializedName("email")
+    @Expose
+    private String email;
+    @SerializedName("avatar")
+    @Expose
+    private String picURL;
+    @SerializedName("phone")
+    @Expose
+    private String phoneNo;
 
     public Contact(String name, String surname, String website, String email, String phoneNo, String picURL) {
         this.name = name;

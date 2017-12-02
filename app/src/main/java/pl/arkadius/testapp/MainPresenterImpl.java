@@ -1,9 +1,14 @@
 package pl.arkadius.testapp;
 
+import android.os.Debug;
 import android.support.annotation.Nullable;
-import android.view.View;
+import android.util.Log;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by arkadius on 01.12.17.
@@ -12,11 +17,11 @@ import java.util.ArrayList;
 public class MainPresenterImpl implements MainContract.MainPresenter {
     @Nullable
     private MainContract.MainView view;
-    private Repository rep;
+    private RepositoryImpl.APIClient apiClient;
     private ArrayList<Contact> contacts;
 
-    MainPresenterImpl(Repository repository){
-        this.rep=repository;
+    MainPresenterImpl(RepositoryImpl.APIClient apiClient){
+        this.apiClient=apiClient;
     }
 
     @Override
@@ -31,8 +36,19 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
 
     @Override
     public void loadContacts() {
-        contacts=rep.getData();
-        view.showContacts(contacts);
+        Call<ArrayList<Contact>> call = apiClient.getContacts();
+        call.enqueue(new Callback<ArrayList<Contact>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Contact>> call, Response<ArrayList<Contact>> response) {
+                contacts=response.body();
+                view.showContacts(contacts);
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Contact>> call, Throwable t) {
+                Log.d("Presenter", "fail "+t.getMessage());
+            }
+        });
     }
 
     @Override

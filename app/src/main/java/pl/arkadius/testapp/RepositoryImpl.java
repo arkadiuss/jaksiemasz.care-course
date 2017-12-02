@@ -2,19 +2,40 @@ package pl.arkadius.testapp;
 
 import java.util.ArrayList;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
+
 /**
  * Created by arkadius on 01.12.17.
  */
 
 public class RepositoryImpl implements Repository {
+    public static final String URL="https://jaksiemaszcare-training-mobile.herokuapp.com/";
+    private static Retrofit retrofit =  new Retrofit.Builder()
+            .baseUrl(URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
 
-    static RepositoryImpl getInstance(){
-        return new RepositoryImpl();
+    private  static APIClient service=null;
+
+    static APIClient getInstance(){
+        if(service==null){
+            service=retrofit.create(APIClient.class);
+        }
+        return service;
+    }
+
+    public interface APIClient {
+        @GET("/api/")
+        Call<ArrayList<Contact>> getContacts();
     }
 
     @Override
-    public ArrayList<Contact> getData() {
-        //Creating list
+    public ArrayList<Contact> getHardcodedData() {
         ArrayList<Contact> cons=new ArrayList<Contact>();
         cons.add(new Contact("Google","Corporation","www.google.com","spoko@firma.com","123456789","https://www.google.pl/doodle4google/images/splashes/featured.png"));
         cons.add(new Contact("Apple","Corporation","www.kiepskafirma.com","kiepska@firma.com","123456789","http://cdn.androidbeat.com/wp-content/uploads/2014/09/Android_eating_Apple_evil.jpg"));
