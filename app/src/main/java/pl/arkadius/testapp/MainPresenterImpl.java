@@ -36,17 +36,22 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
 
     @Override
     public void loadContacts() {
+        view.showProgressBar();
+
         Call<ArrayList<Contact>> call = apiClient.getContacts();
         call.enqueue(new Callback<ArrayList<Contact>>() {
             @Override
             public void onResponse(Call<ArrayList<Contact>> call, Response<ArrayList<Contact>> response) {
                 contacts=response.body();
+                view.hideProgressBar();
                 view.showContacts(contacts);
             }
 
             @Override
             public void onFailure(Call<ArrayList<Contact>> call, Throwable t) {
-                Log.d("Presenter", "fail "+t.getMessage());
+                view.hideProgressBar();
+                Log.d("Presenter",t.getMessage());
+                view.showFailView("Can't connect to server. Nothing to show.\nServer response: "+t.getMessage());
             }
         });
     }
@@ -60,5 +65,11 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
     public void onLongContactClicked(int position) {
         contacts.remove(position);
         view.deleteContact();
+    }
+
+    @Override
+    public void onReconnectButtonClick() {
+        loadContacts();
+        view.hideFailView();
     }
 }

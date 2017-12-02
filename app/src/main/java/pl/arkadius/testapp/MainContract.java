@@ -13,6 +13,10 @@ public interface MainContract {
         void showContacts(ArrayList<Contact> contacts);
         void openContactDetails(Contact contact);
         void deleteContact();
+        void showProgressBar();
+        void hideProgressBar();
+        void showFailView(String text);
+        void hideFailView();
     }
     public interface MainPresenter{
         void attach(MainView v);
@@ -20,5 +24,6 @@ public interface MainContract {
         void loadContacts();
         void onContactClicked(int position);
         void onLongContactClicked(int position);
+        void onReconnectButtonClick();
     }
 }

@@ -11,4 +11,5 @@
     <string name="website2">Strona internetowa 2</string>
     <string name="website_desription">Szkoda robić</string>
     <string name="notify_deleted">Item deleted</string>
+    <string name="reconnect">Reconnect</string>
 </resources>
