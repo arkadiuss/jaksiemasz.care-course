@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity implements MainContract.MainView,ContactsAdapter.Listener{
     @BindView(R.id.recycler_cons)  RecyclerView rv;
@@ -38,8 +39,10 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
         //Creeating view
         hideFailView();
         //Connecting with presenter
+        Realm.init(this);
         presenter = new MainPresenterImpl(NetworkManagerImpl.getInstance(),
-                new SharedPreferencesManagerImpl(this.getSharedPreferences(SharedPreferencesManagerImpl.PREF_NAME, Context.MODE_PRIVATE)));
+                new SharedPreferencesManagerImpl(this.getSharedPreferences(SharedPreferencesManagerImpl.PREF_NAME, Context.MODE_PRIVATE)),
+                new RealmManagerImpl(Realm.getDefaultInstance()));
         presenter.attach(this);
         presenter.initContacts();
         presenter.loadContacts();

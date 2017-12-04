@@ -6,13 +6,17 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
 /**
  * Created by arkadius on 18.11.17.
  */
 
-public class Contact implements Parcelable {
+public class Contact extends RealmObject implements Parcelable {
     @SerializedName("id")
     @Expose
+    @PrimaryKey
     private String id;
     @SerializedName("firstName")
     @Expose
@@ -34,7 +38,11 @@ public class Contact implements Parcelable {
     private String phoneNo;
     public boolean isSeen = false;
 
+    public Contact(){
+
+    }
     public Contact(String id, String name, String surname, String website, String email, String phoneNo, String picURL) {
+        this.id=id;
         this.name = name;
         this.surname = surname;
         this.website = website;

@@ -17,12 +17,14 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
     @Nullable
     private MainContract.MainView view;
     private NetworkManagerImpl networkManager;
+    private RealmManagerImpl realmManager;
     private ArrayList<Contact> contacts;
     private SharedPreferencesManagerImpl sharedPreferencesManager;
 
-    MainPresenterImpl(NetworkManagerImpl networkManager, SharedPreferencesManagerImpl sharedPreferencesManager){
+    MainPresenterImpl(NetworkManagerImpl networkManager, SharedPreferencesManagerImpl sharedPreferencesManager,RealmManagerImpl realmManager){
         this.networkManager = networkManager;
         this.sharedPreferencesManager=sharedPreferencesManager;
+        this.realmManager=realmManager;
     }
 
     @Override
@@ -46,15 +48,20 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
     @Override
     public void loadContacts() {
         if (view != null) {
-            view.showProgressBar();
+            contacts.clear();
+            contacts.addAll(realmManager.getContacts());
+            displaySeen();
+            view.showContacts();
+            //view.showProgressBar();
         }
-
         networkManager.getContacts(new Callback<ArrayList<Contact>>() {
             @Override
             public void onResponse(Call<ArrayList<Contact>> call, Response<ArrayList<Contact>> response) {
                 contacts.clear();
                 contacts.addAll(response.body());
-                setSeen();
+                displaySeen();
+                realmManager.clear();
+                realmManager.addContacts(contacts);
                 view.hideProgressBar();
                 view.showContacts();
             }
@@ -63,14 +70,16 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
             public void onFailure(Call<ArrayList<Contact>> call, Throwable t) {
                 view.hideProgressBar();
                 Log.d("Presenter",t.getMessage());
-                view.showFailView("Can't connect to server. Nothing to show.\nServer response: "+t.getMessage());
+                view.showFailView("Can't connect to server. Presented data can be outdated.\nServer response: "+t.getMessage());
             }
         });
     }
 
-    void setSeen(){
+    void displaySeen(){
         for(int i=0;i<contacts.size();i++){
-            if(sharedPreferencesManager.checkIsSeen(contacts.get(i).getId())) contacts.get(i).setSeen(true);
+            if(sharedPreferencesManager.checkIsSeen(contacts.get(i).getId())) {
+                contacts.get(i).setSeen(true);
+            }
         }
     }
 
@@ -79,8 +88,6 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
         if (view != null) {
             sharedPreferencesManager.setSeen(contacts.get(position).getId(),true);
             contacts.get(position).setSeen(true);
-            for (int i=0;i<contacts.size();i++)
-                Log.d("Seen",contacts.get(i).isSeen+" "+i);
             view.showContacts();
             view.openContactDetails(contacts.get(position));
         }
