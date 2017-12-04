@@ -6,7 +6,7 @@ package pl.arkadius.testapp;
 
 public interface ContactDetailsContract {
     interface ContactDetailsView{
-        void loadContact(Contact contact);
+        void displayContact(Contact contact);
         void showExitingToast();
     }
     interface ContactDetailsPresenter{

@@ -17,11 +17,11 @@ import retrofit2.Response;
 public class MainPresenterImpl implements MainContract.MainPresenter {
     @Nullable
     private MainContract.MainView view;
-    private RepositoryImpl.APIClient apiClient;
+    private RepositoryImpl repository;
     private ArrayList<Contact> contacts;
 
-    MainPresenterImpl(RepositoryImpl.APIClient apiClient){
-        this.apiClient=apiClient;
+    MainPresenterImpl(RepositoryImpl repository){
+        this.repository=repository;
     }
 
     @Override
@@ -35,18 +35,26 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
     }
 
     @Override
+    public void initContacts() {
+        contacts=new ArrayList<Contact>();
+        if (view != null) {
+            view.setContactsList(contacts);
+        }
+    }
+
+    @Override
     public void loadContacts() {
         if (view != null) {
             view.showProgressBar();
         }
 
-        Call<ArrayList<Contact>> call = apiClient.getContacts();
-        call.enqueue(new Callback<ArrayList<Contact>>() {
+        repository.getContacts(new Callback<ArrayList<Contact>>() {
             @Override
             public void onResponse(Call<ArrayList<Contact>> call, Response<ArrayList<Contact>> response) {
-                contacts=response.body();
+                contacts.clear();
+                contacts.addAll(response.body());
                 view.hideProgressBar();
-                view.showContacts(contacts);
+                view.showContacts();
             }
 
             @Override
@@ -74,7 +82,7 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
     }
 
     @Override
-    public void onReconnectButtonClick() {
+    public void onRefreshButtonClick() {
         loadContacts();
         if (view != null) {
             view.hideFailView();

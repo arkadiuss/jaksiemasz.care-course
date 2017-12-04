@@ -1,7 +1,5 @@
 package pl.arkadius.testapp;
 
-import android.view.View;
-
 import java.util.ArrayList;
 
 /**
@@ -10,7 +8,8 @@ import java.util.ArrayList;
 
 public interface MainContract {
     public interface MainView{
-        void showContacts(ArrayList<Contact> contacts);
+        void setContactsList(ArrayList<Contact> contacts);
+        void showContacts();
         void openContactDetails(Contact contact);
         void deleteContact();
         void showProgressBar();
@@ -21,9 +20,10 @@ public interface MainContract {
     public interface MainPresenter{
         void attach(MainView v);
         void detach();
+        void initContacts();
         void loadContacts();
         void onContactClicked(int position);
         void onLongContactClicked(int position);
-        void onReconnectButtonClick();
+        void onRefreshButtonClick();
     }
 }

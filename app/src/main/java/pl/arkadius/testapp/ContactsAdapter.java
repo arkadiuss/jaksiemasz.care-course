@@ -17,6 +17,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by arkadius on 27.11.17.
  */
@@ -40,11 +43,14 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
     public void setListener(Listener l){
         this.listener=l;
     }
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        CardView cv;
-        public ViewHolder(CardView itemView) {
-            super(itemView);
-            cv=itemView;
+    public static class ViewHolder extends RecyclerView.ViewHolder{
+        @BindView(R.id.contact_name) TextView name;
+        @BindView(R.id.contact_email)TextView email;
+        @BindView(R.id.contact_picture) ImageView pic;
+        @BindView(R.id.contact_card_view) CardView cv;
+        public ViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this,view);
         }
     }
 
@@ -59,20 +65,16 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        CardView cv = holder.cv;
-        TextView nameTv = (TextView) cv.findViewById(R.id.contact_name);
-        nameTv.setText(cons.get(position).getFullName());
-        TextView emailTv = (TextView) cv.findViewById(R.id.contact_email);
-        emailTv.setText(cons.get(position).getEmail());
-        ImageView pic = (ImageView) cv.findViewById(R.id.contact_picture);
-        Picasso.with(context).load(cons.get(position).getPicURL()).into(pic);
-        cv.setOnClickListener(new View.OnClickListener() {
+        holder.name.setText(cons.get(position).getFullName());
+        holder.email.setText(cons.get(position).getEmail());
+        Picasso.with(context).load(cons.get(position).getPicURL()).into(holder.pic);
+        holder.cv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 listener.onItemClick(position);
             }
         });
-        cv.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.cv.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 listener.onLongItemClick(position);

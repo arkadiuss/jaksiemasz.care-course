@@ -27,10 +27,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <Button
-            android:id="@+id/reconnect_button"
+            android:id="@+id/refresh_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/reconnect"
+            android:text="@string/refresh"
             android:layout_below="@id/fail_text"
             android:layout_centerVertical="true"/>
     </RelativeLayout>

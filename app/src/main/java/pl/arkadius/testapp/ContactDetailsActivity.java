@@ -64,7 +64,7 @@ public class ContactDetailsActivity extends AppCompatActivity implements Contact
     }
 
     @Override
-    public void loadContact(Contact contact) {
+    public void displayContact(Contact contact) {
         tvName.setText(contact.getFullName());
         tvEmail.setText(contact.getEmail());
         tvPhone.setText(contact.getPhoneNo());

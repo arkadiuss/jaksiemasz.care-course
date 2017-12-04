@@ -1,5 +1,7 @@
 package pl.arkadius.testapp;
 
+import android.widget.ArrayAdapter;
+
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -20,13 +22,14 @@ public class RepositoryImpl implements Repository {
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 
-    private  static APIClient service=null;
 
-    static APIClient getInstance(){
-        if(service==null){
-            service=retrofit.create(APIClient.class);
-        }
-        return service;
+    static RepositoryImpl getInstance(){
+        return new RepositoryImpl();
+    }
+
+    void getContacts(Callback<ArrayList<Contact>> callback){
+        Call<ArrayList<Contact>> call = retrofit.create(APIClient.class).getContacts();
+        call.enqueue(callback);
     }
 
     public interface APIClient {
@@ -37,10 +40,18 @@ public class RepositoryImpl implements Repository {
     @Override
     public ArrayList<Contact> getHardcodedData() {
         ArrayList<Contact> cons=new ArrayList<Contact>();
-        cons.add(new Contact("Google","Corporation","www.google.com","spoko@firma.com","123456789","https://www.google.pl/doodle4google/images/splashes/featured.png"));
-        cons.add(new Contact("Apple","Corporation","www.kiepskafirma.com","kiepska@firma.com","123456789","http://cdn.androidbeat.com/wp-content/uploads/2014/09/Android_eating_Apple_evil.jpg"));
-        cons.add(new Contact("Microsoft","Corporation","www.ujdziewtlumie.com","niebieski@ekran.com","123456789","http://gfx.antyradio.pl/var/antyradio/storage/images/technologia/komputery/niebieski-ekran-smierci-bardziej-przyjazny-uzytkownikom-i-hakerom-7869/627011-1-pol-PL/Niebieski-Ekran-Smierci-bardziej-przyjazny-uzytkownikom-i-hakerom_article.png"));
-        cons.add(new Contact("Linux","Foundation","www.jedynyslusznysystem.com","spoko@firma.com","123456789","https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/10/1444835774tux.jpg"));
+        cons.add(new Contact("Google","Corporation","www.google.com",
+                "spoko@firma.com","123456789",
+                "https://www.google.pl/doodle4google/images/splashes/featured.png"));
+        cons.add(new Contact("Apple","Corporation","www.kiepskafirma.com",
+                "kiepska@firma.com","123456789",
+                "http://cdn.androidbeat.com/wp-content/uploads/2014/09/Android_eating_Apple_evil.jpg"));
+        cons.add(new Contact("Microsoft","Corporation","www.ujdziewtlumie.com",
+                "niebieski@ekran.com","123456789",
+                "http://gfx.antyradio.pl/var/antyradio/storage/images/technologia/komputery/niebieski-ekran-smierci-bardziej-przyjazny-uzytkownikom-i-hakerom-7869/627011-1-pol-PL/Niebieski-Ekran-Smierci-bardziej-przyjazny-uzytkownikom-i-hakerom_article.png"));
+        cons.add(new Contact("Linux","Foundation","www.jedynyslusznysystem.com",
+                "spoko@firma.com","123456789",
+                "https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/10/1444835774tux.jpg"));
         return cons;
     }
 }

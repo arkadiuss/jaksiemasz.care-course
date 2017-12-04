@@ -31,7 +31,7 @@ public class ContactsDetailsPresenterImpl implements ContactDetailsContract.Cont
     @Override
     public void setContact() {
         if (view != null) {
-            view.loadContact(contact);
+            view.displayContact(contact);
         }
     }
 }

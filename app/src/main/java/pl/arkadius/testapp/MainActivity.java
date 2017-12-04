@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -19,11 +20,11 @@ import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity implements MainContract.MainView,ContactsAdapter.Listener{
     @BindView(R.id.recycler_cons)  RecyclerView rv;
-    private ContactsAdapter adCon;
+    private ContactsAdapter contactsAdapter;
     private MainContract.MainPresenter presenter;
     @BindView(R.id.progress_bar)  ProgressBar progressBar;
     @BindView(R.id.fail_text) TextView failText;
-    @BindView(R.id.reconnect_button) Button reconnectButton;
+    @BindView(R.id.refresh_button) Button refreshButton;
 
     public static final String EXTRA_CONTACT="contact";
     @Override
@@ -39,7 +40,9 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
         //Connecting with presenter
         presenter = new MainPresenterImpl(RepositoryImpl.getInstance());
         presenter.attach(this);
+        presenter.initContacts();
         presenter.loadContacts();
+
     }
 
     @Override
@@ -52,9 +55,9 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
         presenter.onLongContactClicked(position);
     }
 
-    @OnClick(R.id.reconnect_button)
-    public void reconnect(){
-        presenter.onReconnectButtonClick();
+    @OnClick(R.id.refresh_button)
+    public void refresh(){
+        presenter.onRefreshButtonClick();
     }
 
     @Override
@@ -66,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
 
     @Override
     public void deleteContact() {
-        adCon.notifyDataSetChanged();
+        contactsAdapter.notifyDataSetChanged();
         Toast.makeText(this, R.string.notify_deleted,Toast.LENGTH_SHORT).show();
     }
 
@@ -84,20 +87,25 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
     public void showFailView(String text) {
         failText.setVisibility(View.VISIBLE);
         failText.setText(text);
-        reconnectButton.setVisibility(View.VISIBLE);
+        refreshButton.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideFailView() {
         failText.setVisibility(View.GONE);
-        reconnectButton.setVisibility(View.GONE);
+        refreshButton.setVisibility(View.GONE);
     }
 
     @Override
-    public void showContacts(ArrayList<Contact> contacts) {
-        adCon = new ContactsAdapter(contacts,this);
-        adCon.setListener(this);
-        rv.setAdapter(adCon);
+    public void setContactsList(ArrayList<Contact> contacts) {
+        contactsAdapter = new ContactsAdapter(contacts,this);
+        contactsAdapter.setListener(this);
+        rv.setAdapter(contactsAdapter);
+    }
+
+    @Override
+    public void showContacts() {
+        contactsAdapter.notifyDataSetChanged();
     }
 
     @Override
