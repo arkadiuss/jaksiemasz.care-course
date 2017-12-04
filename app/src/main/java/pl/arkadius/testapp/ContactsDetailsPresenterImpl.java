@@ -42,6 +42,7 @@ public class ContactsDetailsPresenterImpl implements ContactDetailsContract.Cont
         if (view != null) {
             tmpContact=view.getContactDataFromFields();
             tmpContact.setPicURL(contact.getPicURL());
+            tmpContact.setId(contact.getId());
         }
         return tmpContact;
     }

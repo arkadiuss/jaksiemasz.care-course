@@ -32,14 +32,16 @@ public class Contact implements Parcelable {
     @SerializedName("phone")
     @Expose
     private String phoneNo;
+    public boolean isSeen = false;
 
-    public Contact(String name, String surname, String website, String email, String phoneNo, String picURL) {
+    public Contact(String id, String name, String surname, String website, String email, String phoneNo, String picURL) {
         this.name = name;
         this.surname = surname;
         this.website = website;
         this.phoneNo = phoneNo;
         this.email = email;
         this.picURL = picURL;
+        isSeen=false;
     }
     public Contact(Parcel in){
         this.name = in.readString();
@@ -48,6 +50,7 @@ public class Contact implements Parcelable {
         this.phoneNo = in.readString();
         this.email = in.readString();
         this.picURL = in.readString();
+        this.isSeen = in.readByte() != 0;
     }
 
     static final Parcelable.Creator<Contact> CREATOR = new Parcelable.Creator<Contact>(){
@@ -61,6 +64,10 @@ public class Contact implements Parcelable {
             return new Contact[size];
         }
     };
+    public String getId(){ return id;}
+
+    public void setId(String id){this.id=id;}
+
     public String getName() {
         return name;
     }
@@ -113,6 +120,10 @@ public class Contact implements Parcelable {
         this.picURL = picURL;
     }
 
+    public void setSeen(boolean seen){
+        this.isSeen=seen;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -126,5 +137,6 @@ public class Contact implements Parcelable {
         dest.writeString(phoneNo);
         dest.writeString(email);
         dest.writeString(picURL);
+        dest.writeByte((byte) (isSeen ? 1:0));
     }
 }

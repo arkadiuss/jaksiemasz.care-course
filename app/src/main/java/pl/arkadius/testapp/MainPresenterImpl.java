@@ -1,6 +1,5 @@
 package pl.arkadius.testapp;
 
-import android.os.Debug;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -17,11 +16,13 @@ import retrofit2.Response;
 public class MainPresenterImpl implements MainContract.MainPresenter {
     @Nullable
     private MainContract.MainView view;
-    private RepositoryImpl repository;
+    private NetworkManagerImpl networkManager;
     private ArrayList<Contact> contacts;
+    private SharedPreferencesManagerImpl sharedPreferencesManager;
 
-    MainPresenterImpl(RepositoryImpl repository){
-        this.repository=repository;
+    MainPresenterImpl(NetworkManagerImpl networkManager, SharedPreferencesManagerImpl sharedPreferencesManager){
+        this.networkManager = networkManager;
+        this.sharedPreferencesManager=sharedPreferencesManager;
     }
 
     @Override
@@ -48,11 +49,12 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
             view.showProgressBar();
         }
 
-        repository.getContacts(new Callback<ArrayList<Contact>>() {
+        networkManager.getContacts(new Callback<ArrayList<Contact>>() {
             @Override
             public void onResponse(Call<ArrayList<Contact>> call, Response<ArrayList<Contact>> response) {
                 contacts.clear();
                 contacts.addAll(response.body());
+                setSeen();
                 view.hideProgressBar();
                 view.showContacts();
             }
@@ -66,9 +68,20 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
         });
     }
 
+    void setSeen(){
+        for(int i=0;i<contacts.size();i++){
+            if(sharedPreferencesManager.checkIsSeen(contacts.get(i).getId())) contacts.get(i).setSeen(true);
+        }
+    }
+
     @Override
     public void onContactClicked(int position) {
         if (view != null) {
+            sharedPreferencesManager.setSeen(contacts.get(position).getId(),true);
+            contacts.get(position).setSeen(true);
+            for (int i=0;i<contacts.size();i++)
+                Log.d("Seen",contacts.get(i).isSeen+" "+i);
+            view.showContacts();
             view.openContactDetails(contacts.get(position));
         }
     }

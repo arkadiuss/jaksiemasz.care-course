@@ -100,7 +100,7 @@ public class ContactDetailsActivity extends AppCompatActivity implements Contact
         String name="",surname="";
         if(fullName.length>=1) name=fullName[0];
         if(fullName.length>=2) surname=fullName[1];
-        Contact con=new Contact(name,surname,etWebsite.getText().toString(),etEmail.getText().toString(),etPhone.getText().toString(),"");
+        Contact con=new Contact("",name,surname,etWebsite.getText().toString(),etEmail.getText().toString(),etPhone.getText().toString(),"");
         return con;
     }
 }

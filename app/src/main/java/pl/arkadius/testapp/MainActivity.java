@@ -1,11 +1,11 @@
 package pl.arkadius.testapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -38,7 +38,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
         //Creeating view
         hideFailView();
         //Connecting with presenter
-        presenter = new MainPresenterImpl(RepositoryImpl.getInstance());
+        presenter = new MainPresenterImpl(NetworkManagerImpl.getInstance(),
+                new SharedPreferencesManagerImpl(this.getSharedPreferences(SharedPreferencesManagerImpl.PREF_NAME, Context.MODE_PRIVATE)));
         presenter.attach(this);
         presenter.initContacts();
         presenter.loadContacts();

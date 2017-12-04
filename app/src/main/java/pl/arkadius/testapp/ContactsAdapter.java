@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -48,6 +49,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
         @BindView(R.id.contact_email)TextView email;
         @BindView(R.id.contact_picture) ImageView pic;
         @BindView(R.id.contact_card_view) CardView cv;
+        @BindView(R.id.main_layout) RelativeLayout mainRelative;
         public ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this,view);
@@ -68,6 +70,10 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
         holder.name.setText(cons.get(position).getFullName());
         holder.email.setText(cons.get(position).getEmail());
         Picasso.with(context).load(cons.get(position).getPicURL()).into(holder.pic);
+        if(cons.get(position).isSeen) {
+            holder.name.setText(holder.name.getText().toString()+" - visited");
+            holder.mainRelative.setBackgroundColor(context.getResources().getColor(R.color.visited));
+        }
         holder.cv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
