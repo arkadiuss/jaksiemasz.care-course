@@ -1,6 +1,7 @@
 package pl.arkadius.testapp;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 /**
  * Created by arkadius on 02.12.17.
@@ -26,6 +27,11 @@ public class ContactsDetailsPresenterImpl implements ContactDetailsContract.Cont
     @Override
     public void receiveContact(Contact contact) {
         this.contact=contact;
+        if (contact!=null){
+            Log.d("Presenter receiving",contact.getFullName());
+        }else{
+            Log.d("Presenter receiving","NULL:(");
+        }
     }
 
     @Override
@@ -33,5 +39,15 @@ public class ContactsDetailsPresenterImpl implements ContactDetailsContract.Cont
         if (view != null) {
             view.displayContact(contact);
         }
+    }
+
+    @Override
+    public Contact getContactToSave() {
+        Contact tmpContact=null;
+        if (view != null) {
+            tmpContact=view.getContactDataFromFields();
+            tmpContact.setPicURL(contact.getPicURL());
+        }
+        return tmpContact;
     }
 }
