@@ -27,11 +27,6 @@ public class ContactsDetailsPresenterImpl implements ContactDetailsContract.Cont
     @Override
     public void receiveContact(Contact contact) {
         this.contact=contact;
-        if (contact!=null){
-            Log.d("Presenter receiving",contact.getFullName());
-        }else{
-            Log.d("Presenter receiving","NULL:(");
-        }
     }
 
     @Override
