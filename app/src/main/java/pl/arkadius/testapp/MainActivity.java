@@ -2,7 +2,10 @@ package pl.arkadius.testapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
     @BindView(R.id.progress_bar)  ProgressBar progressBar;
     @BindView(R.id.fail_text) TextView failText;
     @BindView(R.id.refresh_button) Button refreshButton;
+    private ActionBar actionBar;
 
     public static final String EXTRA_CONTACT="contact";
     @Override
@@ -37,13 +41,17 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
         //Creeating view
+        actionBar=getSupportActionBar();
         hideFailView();
         //Connecting with presenter
         Realm.init(this);
-        presenter = new MainPresenterImpl(NetworkManagerImpl.getInstance(),
+        presenter = new MainPresenterImpl(
+                NetworkManagerImpl.getInstance(),
                 new SharedPreferencesManagerImpl(this.getSharedPreferences(SharedPreferencesManagerImpl.PREF_NAME, Context.MODE_PRIVATE)),
-                new RealmManagerImpl(Realm.getDefaultInstance()));
+                new RealmManagerImpl(Realm.getDefaultInstance()),
+                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE));
         presenter.attach(this);
+        presenter.initActionBar();
         presenter.initContacts();
         presenter.loadContacts();
 
@@ -98,6 +106,11 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
     public void hideFailView() {
         failText.setVisibility(View.GONE);
         refreshButton.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setActionBarColor(int color) {
+        actionBar.setBackgroundDrawable(getResources().getDrawable(color));
     }
 
     @Override

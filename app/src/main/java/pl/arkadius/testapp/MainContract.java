@@ -1,5 +1,7 @@
 package pl.arkadius.testapp;
 
+import android.graphics.Color;
+
 import java.util.ArrayList;
 
 /**
@@ -16,10 +18,12 @@ public interface MainContract {
         void hideProgressBar();
         void showFailView(String text);
         void hideFailView();
+        void setActionBarColor(int color);
     }
     public interface MainPresenter{
         void attach(MainView v);
         void detach();
+        void initActionBar();
         void initContacts();
         void loadContacts();
         void onContactClicked(int position);

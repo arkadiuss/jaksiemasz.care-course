@@ -1,5 +1,7 @@
 package pl.arkadius.testapp;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -20,11 +22,16 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
     private RealmManagerImpl realmManager;
     private ArrayList<Contact> contacts;
     private SharedPreferencesManagerImpl sharedPreferencesManager;
+    private ConnectivityManager connectivityManager;
 
-    MainPresenterImpl(NetworkManagerImpl networkManager, SharedPreferencesManagerImpl sharedPreferencesManager,RealmManagerImpl realmManager){
+    MainPresenterImpl(NetworkManagerImpl networkManager,
+                      SharedPreferencesManagerImpl sharedPreferencesManager,
+                      RealmManagerImpl realmManager,
+                      ConnectivityManager connectivityManager){
         this.networkManager = networkManager;
         this.sharedPreferencesManager=sharedPreferencesManager;
         this.realmManager=realmManager;
+        this.connectivityManager=connectivityManager;
     }
 
     @Override
@@ -35,6 +42,13 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
     @Override
     public void detach() {
         view=null;
+    }
+
+    @Override
+    public void initActionBar() {
+        NetworkInfo network = connectivityManager.getActiveNetworkInfo();
+        if(network==null||!network.isConnectedOrConnecting())
+            view.setActionBarColor(R.color.visited);
     }
 
     @Override
@@ -75,7 +89,7 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
         });
     }
 
-    void displaySeen(){
+    private void displaySeen(){
         for(int i=0;i<contacts.size();i++){
             if(sharedPreferencesManager.checkIsSeen(contacts.get(i).getId())) {
                 contacts.get(i).setSeen(true);
