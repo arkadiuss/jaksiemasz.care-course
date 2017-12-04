@@ -45,10 +45,15 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
     }
 
     @Override
-    public void initActionBar() {
+    public void checkConnectivity() {
         NetworkInfo network = connectivityManager.getActiveNetworkInfo();
-        if(network==null||!network.isConnectedOrConnecting())
+        if(network==null||!network.isConnectedOrConnecting()) {
             view.setActionBarColor(R.color.visited);
+            view.showFailView("You don't have network connection. Presented data can be outdated");
+        }else {
+            view.setActionBarColor(R.color.colorPrimary);
+            view.hideFailView();
+        }
     }
 
     @Override

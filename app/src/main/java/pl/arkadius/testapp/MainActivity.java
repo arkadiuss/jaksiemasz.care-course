@@ -1,8 +1,9 @@
 package pl.arkadius.testapp;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
     @BindView(R.id.fail_text) TextView failText;
     @BindView(R.id.refresh_button) Button refreshButton;
     private ActionBar actionBar;
-
+    private BroadcastReceiver networkReceiver;
     public static final String EXTRA_CONTACT="contact";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +52,16 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
                 new RealmManagerImpl(Realm.getDefaultInstance()),
                 (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE));
         presenter.attach(this);
-        presenter.initActionBar();
+        presenter.checkConnectivity();
         presenter.initContacts();
         presenter.loadContacts();
-
+        networkReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                presenter.checkConnectivity();
+            }
+        };
+        registerReceiver(networkReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
     @Override
@@ -128,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(networkReceiver);
         presenter.detach();
     }
 }

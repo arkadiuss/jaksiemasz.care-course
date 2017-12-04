@@ -23,7 +23,7 @@ public interface MainContract {
     public interface MainPresenter{
         void attach(MainView v);
         void detach();
-        void initActionBar();
+        void checkConnectivity();
         void initContacts();
         void loadContacts();
         void onContactClicked(int position);
