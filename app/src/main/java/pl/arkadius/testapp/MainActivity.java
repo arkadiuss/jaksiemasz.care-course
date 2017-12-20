@@ -47,8 +47,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
         //Connecting with presenter
         Realm.init(this);
         presenter = new MainPresenterImpl(
-                new ContactsRepositoryImpl(Realm.getDefaultInstance()),
-                new SharedPreferencesManagerImpl(this.getSharedPreferences(SharedPreferencesManagerImpl.PREF_NAME, Context.MODE_PRIVATE)),
+                new ContactsRepositoryImpl(Realm.getDefaultInstance(),this.getSharedPreferences(ContactsRepositoryImpl.PREF_NAME,Context.MODE_PRIVATE)),
                 (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE));
         presenter.attach(this);
         presenter.checkConnectivity();

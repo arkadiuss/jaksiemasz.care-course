@@ -10,4 +10,6 @@ import retrofit2.Callback;
 
 public interface ContactsRepository {
     void getContacts(RepositoryCallback callback);
+    boolean checkIsSeen(String id);
+    void setSeen(String id, boolean seen);
 }

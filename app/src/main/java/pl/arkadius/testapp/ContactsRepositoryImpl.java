@@ -1,5 +1,6 @@
 package pl.arkadius.testapp;
 
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -18,15 +19,20 @@ import retrofit2.http.GET;
  */
 
 public class ContactsRepositoryImpl implements ContactsRepository {
-    public static final String URL="https://jaksiemaszcare-training-mobile.herokuapp.com/";
-    private static Retrofit retrofit =  new Retrofit.Builder()
+    private final String URL="https://jaksiemaszcare-training-mobile.herokuapp.com/";
+    public static final String PREF_NAME="CONTACTS_SH";
+    private Retrofit retrofit =  new Retrofit.Builder()
             .baseUrl(URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build();
     Realm realm;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
-    public ContactsRepositoryImpl(Realm realm){
+    public ContactsRepositoryImpl(Realm realm,SharedPreferences sharedPreferences){
         this.realm=realm;
+        this.sharedPreferences=sharedPreferences;
+        editor=sharedPreferences.edit();
     }
 
     public interface APIClient {
@@ -51,6 +57,9 @@ public class ContactsRepositoryImpl implements ContactsRepository {
             }
         });
     }
+
+    //Realm
+    //TODO extract
 
     private void saveOfflineContacts(ArrayList<Contact> contacts) {
         realm.beginTransaction();
@@ -78,5 +87,17 @@ public class ContactsRepositoryImpl implements ContactsRepository {
         RealmResults<Contact> toDel =realm.where(Contact.class).findAll();
         toDel.deleteAllFromRealm();
         realm.commitTransaction();
+    }
+
+    //SharedPreferences
+    //TODO extract
+    @Override
+    public boolean checkIsSeen(String id) {
+        return sharedPreferences.getBoolean(id,false);
+    }
+
+    @Override
+    public void setSeen(String id,boolean seen) {
+        editor.putBoolean(id,seen).apply();
     }
 }

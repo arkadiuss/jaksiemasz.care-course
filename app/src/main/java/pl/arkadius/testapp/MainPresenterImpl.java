@@ -21,14 +21,11 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
     private MainContract.MainView view;
     private ContactsRepositoryImpl contactsRepository;
     private ArrayList<Contact> contacts;
-    private SharedPreferencesManagerImpl sharedPreferencesManager;
     private ConnectivityManager connectivityManager;
 
     MainPresenterImpl(ContactsRepositoryImpl networkManager,
-                      SharedPreferencesManagerImpl sharedPreferencesManager,
                       ConnectivityManager connectivityManager){
         this.contactsRepository = networkManager;
-        this.sharedPreferencesManager=sharedPreferencesManager;
         this.connectivityManager=connectivityManager;
     }
 
@@ -88,7 +85,7 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
 
     private void displaySeen(){
         for(int i=0;i<contacts.size();i++){
-            if(sharedPreferencesManager.checkIsSeen(contacts.get(i).getId())) {
+            if(contactsRepository.checkIsSeen(contacts.get(i).getId())) {
                 contacts.get(i).setSeen(true);
             }
         }
@@ -97,7 +94,7 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
     @Override
     public void onContactClicked(int position) {
         if (view != null) {
-            sharedPreferencesManager.setSeen(contacts.get(position).getId(),true);
+            contactsRepository.setSeen(contacts.get(position).getId(),true);
             contacts.get(position).setSeen(true);
             view.showContacts();
             view.openContactDetails(contacts.get(position));
