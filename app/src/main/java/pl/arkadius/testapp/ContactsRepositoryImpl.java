@@ -1,5 +1,7 @@
 package pl.arkadius.testapp;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 import io.realm.Realm;

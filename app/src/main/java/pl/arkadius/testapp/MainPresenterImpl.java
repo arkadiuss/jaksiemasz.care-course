@@ -2,6 +2,7 @@ package pl.arkadius.testapp;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Debug;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -46,6 +47,7 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
         NetworkInfo network = connectivityManager.getActiveNetworkInfo();
         if(network==null||!network.isConnectedOrConnecting()) {
             view.setActionBarColor(R.color.visited);
+            //TODO Reload contacts
             view.showFailView("You don't have network connection. Presented data can be outdated");
         }else {
             view.setActionBarColor(R.color.colorPrimary);
@@ -63,11 +65,12 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
 
     @Override
     public void loadContacts() {
+        if(view!=null) view.showProgressBar();
         contactsRepository.getContacts(new RepositoryCallback() {
             @Override
-            public void onSuccess(ArrayList<Contact> contacts) {
+            public void onSuccess(ArrayList<Contact> con) {
                 contacts.clear();
-                contacts.addAll(contacts);
+                contacts.addAll(con);
                 displaySeen();
                 view.hideProgressBar();
                 view.showContacts();
