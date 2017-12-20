@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 
 public interface MainContract {
-    public interface MainView{
+    interface MainView{
         void setContactsList(ArrayList<Contact> contacts);
         void showContacts();
         void openContactDetails(Contact contact);
@@ -20,7 +20,7 @@ public interface MainContract {
         void hideFailView();
         void setActionBarColor(int color);
     }
-    public interface MainPresenter{
+    interface MainPresenter{
         void attach(MainView v);
         void detach();
         void checkConnectivity();
