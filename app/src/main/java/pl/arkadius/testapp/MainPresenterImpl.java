@@ -18,19 +18,16 @@ import retrofit2.Response;
 public class MainPresenterImpl implements MainContract.MainPresenter {
     @Nullable
     private MainContract.MainView view;
-    private NetworkManagerImpl networkManager;
-    private RealmManagerImpl realmManager;
+    private ContactsRepositoryImpl contactsRepository;
     private ArrayList<Contact> contacts;
     private SharedPreferencesManagerImpl sharedPreferencesManager;
     private ConnectivityManager connectivityManager;
 
-    MainPresenterImpl(NetworkManagerImpl networkManager,
+    MainPresenterImpl(ContactsRepositoryImpl networkManager,
                       SharedPreferencesManagerImpl sharedPreferencesManager,
-                      RealmManagerImpl realmManager,
                       ConnectivityManager connectivityManager){
-        this.networkManager = networkManager;
+        this.contactsRepository = networkManager;
         this.sharedPreferencesManager=sharedPreferencesManager;
-        this.realmManager=realmManager;
         this.connectivityManager=connectivityManager;
     }
 
@@ -66,30 +63,22 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
 
     @Override
     public void loadContacts() {
-        if (view != null) {
-            contacts.clear();
-            contacts.addAll(realmManager.getContacts());
-            displaySeen();
-            view.showContacts();
-            //view.showProgressBar();
-        }
-        networkManager.getContacts(new Callback<ArrayList<Contact>>() {
+        contactsRepository.getContacts(new RepositoryCallback() {
             @Override
-            public void onResponse(Call<ArrayList<Contact>> call, Response<ArrayList<Contact>> response) {
+            public void onSuccess(ArrayList<Contact> contacts) {
                 contacts.clear();
-                contacts.addAll(response.body());
+                contacts.addAll(contacts);
                 displaySeen();
-                realmManager.clear();
-                realmManager.addContacts(contacts);
                 view.hideProgressBar();
                 view.showContacts();
             }
 
             @Override
-            public void onFailure(Call<ArrayList<Contact>> call, Throwable t) {
+            public void onError(Throwable t) {
                 view.hideProgressBar();
                 Log.d("Presenter",t.getMessage());
                 view.showFailView("Can't connect to server. Presented data can be outdated.\nServer response: "+t.getMessage());
+
             }
         });
     }
