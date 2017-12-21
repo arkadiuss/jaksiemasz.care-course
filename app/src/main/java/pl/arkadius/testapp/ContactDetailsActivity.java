@@ -30,7 +30,7 @@ public class ContactDetailsActivity extends AppCompatActivity implements Contact
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_2);
         //Setting presenter
-        presenter=new ContactsDetailsPresenterImpl();
+        presenter=new ContactDetailsPresenterImpl();
         presenter.attach(this);
         //Getting contact
         Contact contact = getIntent().getParcelableExtra(MainActivity.EXTRA_CONTACT);

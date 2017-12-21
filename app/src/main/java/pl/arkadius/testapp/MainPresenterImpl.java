@@ -2,15 +2,10 @@ package pl.arkadius.testapp;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Debug;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.ArrayList;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by arkadius on 01.12.17.

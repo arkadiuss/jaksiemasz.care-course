@@ -7,7 +7,7 @@ import android.util.Log;
  * Created by arkadius on 02.12.17.
  */
 
-public class ContactsDetailsPresenterImpl implements ContactDetailsContract.ContactDetailsPresenter {
+public class ContactDetailsPresenterImpl implements ContactDetailsContract.ContactDetailsPresenter {
     @Nullable
     private ContactDetailsContract.ContactDetailsView view;
     private Contact contact;

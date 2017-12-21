@@ -8,6 +8,5 @@ import java.util.ArrayList;
 
 interface RepositoryCallback {
     void onSuccess(ArrayList<Contact> contacts);
-
     void onError(Throwable t);
 }
