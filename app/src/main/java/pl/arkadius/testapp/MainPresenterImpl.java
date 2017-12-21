@@ -20,7 +20,6 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
     @Nullable
     private MainContract.MainView view;
     private ContactsRepositoryImpl contactsRepository;
-    private ArrayList<Contact> contacts;
     private ConnectivityManager connectivityManager;
 
     MainPresenterImpl(ContactsRepositoryImpl networkManager,
@@ -52,13 +51,6 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
         }
     }
 
-    @Override
-    public void initContacts() {
-        contacts=new ArrayList<Contact>();
-        if (view != null) {
-            view.setContactsList(contacts);
-        }
-    }
 
     @Override
     public void loadContacts() {
@@ -66,11 +58,10 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
         contactsRepository.getContacts(new RepositoryCallback() {
             @Override
             public void onSuccess(ArrayList<Contact> con) {
-                contacts.clear();
-                contacts.addAll(con);
-                displaySeen();
+                view.clearContactsFromAdapter();
+                view.addContactsToAdapter(con);
                 view.hideProgressBar();
-                view.showContacts();
+                view.updateContactView();
             }
 
             @Override
@@ -83,30 +74,21 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
         });
     }
 
-    private void displaySeen(){
-        for(int i=0;i<contacts.size();i++){
-            if(contactsRepository.checkIsSeen(contacts.get(i).getId())) {
-                contacts.get(i).setSeen(true);
-            }
-        }
-    }
 
     @Override
     public void onContactClicked(int position) {
         if (view != null) {
-            contactsRepository.setSeen(contacts.get(position).getId(),true);
-            contacts.get(position).setSeen(true);
-            view.showContacts();
-            view.openContactDetails(contacts.get(position));
+            contactsRepository.setSeen(view.getContactFromAdapter(position).getId(),true);
+            view.setContactSeen(position,true);
+            view.updateContactView();
+            view.openContactDetails(view.getContactFromAdapter(position));
         }
     }
 
     @Override
     public void onLongContactClicked(int position) {
-        contacts.remove(position);
-        if (view != null) {
-            view.deleteContact();
-        }
+        view.removeContactsFromAdapter(position);
+        view.updateContactView();
     }
 
     @Override

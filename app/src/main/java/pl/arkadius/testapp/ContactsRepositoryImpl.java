@@ -46,9 +46,12 @@ public class ContactsRepositoryImpl implements ContactsRepository {
         call.enqueue(new Callback<ArrayList<Contact>>() {
             @Override
             public void onResponse(Call<ArrayList<Contact>> call, Response<ArrayList<Contact>> response) {
-                callback.onSuccess(response.body());
+                ArrayList<Contact> cons = response.body();
+                for(int i=0;i<cons.size();i++)
+                    cons.get(i).setSeen(checkIsSeen(cons.get(i).getId()));
+                callback.onSuccess(cons);
                 clearRealm();
-                saveOfflineContacts(response.body());
+                saveOfflineContacts(cons);
             }
 
             @Override
@@ -73,6 +76,7 @@ public class ContactsRepositoryImpl implements ContactsRepository {
         ArrayList<Contact> contacts=new ArrayList<Contact>();
         for(Contact con : results){
             contacts.add(plainContact(con));
+            contacts.get(contacts.size()-1).setSeen(checkIsSeen(con.getId()));
         }
         return contacts;
     }
@@ -91,8 +95,7 @@ public class ContactsRepositoryImpl implements ContactsRepository {
 
     //SharedPreferences
     //TODO extract
-    @Override
-    public boolean checkIsSeen(String id) {
+    private boolean checkIsSeen(String id) {
         return sharedPreferences.getBoolean(id,false);
     }
 

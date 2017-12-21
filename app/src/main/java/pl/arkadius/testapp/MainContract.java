@@ -10,10 +10,13 @@ import java.util.ArrayList;
 
 public interface MainContract {
     interface MainView{
-        void setContactsList(ArrayList<Contact> contacts);
-        void showContacts();
+        void addContactsToAdapter(ArrayList<Contact> contacts);
+        void removeContactsFromAdapter(int position);
+        void clearContactsFromAdapter();
+        void setContactSeen(int position,boolean seen);
+        void updateContactView();
+        Contact getContactFromAdapter(int position);
         void openContactDetails(Contact contact);
-        void deleteContact();
         void showProgressBar();
         void hideProgressBar();
         void showFailView(String text);
@@ -24,7 +27,6 @@ public interface MainContract {
         void attach(MainView v);
         void detach();
         void checkConnectivity();
-        void initContacts();
         void loadContacts();
         void onContactClicked(int position);
         void onLongContactClicked(int position);

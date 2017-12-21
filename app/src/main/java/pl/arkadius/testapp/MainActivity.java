@@ -23,9 +23,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.Realm;
 
-public class MainActivity extends AppCompatActivity implements MainContract.MainView,ContactsAdapter.Listener{
+public class MainActivity extends AppCompatActivity implements MainContract.MainView,ContactsAdapterImpl.Listener{
+
     @BindView(R.id.recycler_cons)  RecyclerView rv;
-    private ContactsAdapter contactsAdapter;
+    private ContactsAdapterImpl contactsAdapterImpl;
     private MainContract.MainPresenter presenter;
     @BindView(R.id.progress_bar)  ProgressBar progressBar;
     @BindView(R.id.fail_text) TextView failText;
@@ -41,6 +42,9 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
         //Creating recycler view
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
+        contactsAdapterImpl = new ContactsAdapterImpl(this);
+        contactsAdapterImpl.setListener(this);
+        rv.setAdapter(contactsAdapterImpl);
         //Creeating view
         actionBar=getSupportActionBar();
         hideFailView();
@@ -51,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
                 (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE));
         presenter.attach(this);
         presenter.checkConnectivity();
-        presenter.initContacts();
         presenter.loadContacts();
         networkReceiver = new BroadcastReceiver() {
             @Override
@@ -78,16 +81,40 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
     }
 
     @Override
+    public void addContactsToAdapter(ArrayList<Contact> contacts) {
+        contactsAdapterImpl.addContacts(contacts);
+    }
+
+    @Override
+    public void removeContactsFromAdapter(int position) {
+        contactsAdapterImpl.removeContact(position);
+    }
+
+    @Override
+    public void clearContactsFromAdapter() {
+        contactsAdapterImpl.clearContacts();
+    }
+
+    @Override
+    public void setContactSeen(int position,boolean seen) {
+        contactsAdapterImpl.setContactSeen(position,seen);
+    }
+
+    @Override
+    public void updateContactView() {
+        contactsAdapterImpl.notifyDataSetChanged();
+    }
+
+    @Override
+    public Contact getContactFromAdapter(int position) {
+        return contactsAdapterImpl.getContact(position);
+    }
+
+    @Override
     public void openContactDetails(Contact contact) {
         Intent toSec = new Intent(this,ContactDetailsActivity.class);
         toSec.putExtra(EXTRA_CONTACT,contact);
         startActivity(toSec);
-    }
-
-    @Override
-    public void deleteContact() {
-        contactsAdapter.notifyDataSetChanged();
-        Toast.makeText(this, R.string.notify_deleted,Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -116,18 +143,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
     @Override
     public void setActionBarColor(int color) {
         actionBar.setBackgroundDrawable(getResources().getDrawable(color));
-    }
-
-    @Override
-    public void setContactsList(ArrayList<Contact> contacts) {
-        contactsAdapter = new ContactsAdapter(contacts,this);
-        contactsAdapter.setListener(this);
-        rv.setAdapter(contactsAdapter);
-    }
-
-    @Override
-    public void showContacts() {
-        contactsAdapter.notifyDataSetChanged();
     }
 
     @Override
